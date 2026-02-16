@@ -63,8 +63,8 @@ std::shared_ptr<HumanReadableMap16::Header> HumanReadableMap16::to_map16::parse_
 }
 
 void HumanReadableMap16::to_map16::verify_header_file(const fs::path header_path) {
-	if (!fs::exists("header.txt")) {
-		throw FilesystemError("Expected file appears to be missing", fs::path("header.txt"));
+	if (!fs::exists(header_path)) {
+		throw FilesystemError("Expected file appears to be missing", header_path);
 	}
 
 	std::array HEADER_VARS{
