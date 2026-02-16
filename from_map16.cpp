@@ -60,7 +60,7 @@ std::vector<HumanReadableMap16::OffsetSizePair> HumanReadableMap16::from_map16::
 
 	std::vector<OffsetSizePair> pointers_and_sizes;
 
-	for (int i = 0; i != header->offset_size_table_size / 4; i += 2) {
+	for (size_t i = 0; i != header->offset_size_table_size / 4; i += 2) {
 		pointers_and_sizes.push_back(
 			OffsetSizePair(
 				join_bytes(beg + off_table_offset + (4 * i), beg + off_table_offset + (4 * (i + 1))),
@@ -439,7 +439,7 @@ void HumanReadableMap16::from_map16::convert(const fs::path input_file, const fs
 		}
 		fs::create_directory("pipe_tiles");
 
-	} catch (const fs::filesystem_error e) {
+	} catch (const fs::filesystem_error& e) {
 		throw FilesystemError("Encountered underlying file system error: " + std::string(e.what()), output_path);
 	}
 
@@ -447,8 +447,8 @@ void HumanReadableMap16::from_map16::convert(const fs::path input_file, const fs
 
 	const auto& full_map16_pair = offset_size_table[0];
 	const auto& full_acts_like_pair = offset_size_table[1];
-	const auto& fg_map16_pair = offset_size_table[2];
-	const auto& bg_map16_pair = offset_size_table[3];
+	// const auto& fg_map16_pair = offset_size_table[2];
+	// const auto& bg_map16_pair = offset_size_table[3];
 	const auto& tileset_specific_page_2s_pair = offset_size_table[4];
 	const auto& tileset_specific_first_two_pair = offset_size_table[5];
 	const auto& normal_pipe_tiles = offset_size_table[6];

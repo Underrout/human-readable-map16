@@ -21,7 +21,7 @@ class FilesystemError : public HumanMap16Exception {
 			return missing_path;
 		}
 
-		std::string get_detailed_error_message() {
+		std::string get_detailed_error_message() const {
 			std::ostringstream s;
 
 			s << get_message() << std::endl << "Affected path: " << missing_path;

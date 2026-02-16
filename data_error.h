@@ -21,19 +21,19 @@ public:
 		_char_index = char_index + 1;
 	}
 
-	const fs::path get_file_path() {
+	const fs::path get_file_path() const {
 		return in_file;
 	}
 
-	unsigned int get_line_number() {
+	unsigned int get_line_number() const {
 		return _line_number;
 	}
 
-	const std::string get_line() {
+	const std::string get_line() const {
 		return incorrect_line;
 	}
 
-	unsigned int get_char_index() {
+	unsigned int get_char_index() const {
 		return _char_index;
 	}
 };

@@ -22,27 +22,27 @@ class TileError : public DataError {
 			expected_tile_number = tile_number;
 		}
 
-		TileFormat get_format() {
+		TileFormat get_format() const {
 			return expected_tile_format;
 		}
 
-		unsigned int get_tile_number() {
+		unsigned int get_tile_number() const {
 			return expected_tile_number;
 		}
 
-		std::string get_detailed_error_message() {
+		std::string get_detailed_error_message() const {
 			std::ostringstream s;
 			s << "Error in file \"" << get_file_path().string() << "\" on line " << get_line_number() << " at character " << get_char_index() << ":" << std::endl <<
 				"    \"" << get_line() << '\"' << std::endl;
-			for (int i = 0; i != get_char_index() + 4; i++) {
+			for (size_t i = 0; i != get_char_index() + 4; i++) {
 				s << " ";
 			}
 			s << "^" << std::endl;
-			for (int i = 0; i != get_char_index() + 4; i++) {
+			for (size_t i = 0; i != get_char_index() + 4; i++) {
 				s << " ";
 			}
 			s << "|" << std::endl;
-			for (int i = 0; i != get_char_index() + 4; i++) {
+			for (size_t i = 0; i != get_char_index() + 4; i++) {
 				s << " ";
 			}
 			s << get_message() << std::endl;
