@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "human_readable_map16.h"
 #include "arrays.h"
+#include <iterator>
 
 HumanReadableMap16::_4Bytes HumanReadableMap16::from_map16::join_bytes(ByteIterator begin, ByteIterator end) {
 	_4Bytes t = 0;

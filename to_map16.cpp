@@ -4,6 +4,7 @@
 #include "tile_error.h"
 #include "header_error.h"
 #include "arrays.h"
+#include <algorithm>
 
 std::shared_ptr<HumanReadableMap16::Header> HumanReadableMap16::to_map16::parse_header_file(const fs::path header_path) {
 	verify_header_file(header_path);
