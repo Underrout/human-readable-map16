@@ -4,6 +4,7 @@ default: all
 SOURCES += from_map16.cpp
 SOURCES += to_map16.cpp
 SOURCES += human_readable_map16.cpp
+SOURCES += c_api.cpp
 
 ifeq ($(PLATFORM),)
   ifeq ($(OS),Windows_NT)
