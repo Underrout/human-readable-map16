@@ -1,11 +1,5 @@
 #pragma once
 
-#ifdef _WIN32
-#define SEP "\\"
-#else
-#define SEP "/"
-#endif
-
 #include <vector>
 #include <string>
 #include <fstream>
@@ -145,25 +139,25 @@ namespace HumanReadableMap16 {
 			static void convert_to_file(FILE* fp, unsigned int tile_numer, _2Bytes tile1, _2Bytes tile2, _2Bytes tile3, _2Bytes tile4);
 
 			// for pages 0x2/0x3-0x7F, converts tiles and acts like settings, tiles_start_offset and acts_like_start_offset should both just be the offsets from the header
-			static void convert_FG_page(std::vector<Byte> map16_buffer, unsigned int page_number,
+			static void convert_FG_page(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int page_number,
 				size_t tiles_start_offset, size_t acts_like_start_offset);
 
 			// for pages 0x80-0xFF, converts tiles only since BG pages do not have acts like settings
-			static void convert_BG_page(std::vector<Byte> map16_buffer, unsigned int page_number, size_t tiles_start_offset);
+			static void convert_BG_page(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int page_number, size_t tiles_start_offset);
 			
 			// for pages 0x0-0x1 of tileset groups 0x0-0x4, only converts tile numbers of tileset-group-specific tiles, includes diagonal pipe tiles in tileset group 0x0
-			static void convert_tileset_group_specific_pages(std::vector<Byte> map16_buffer, unsigned int tileset_group_number,
+			static void convert_tileset_group_specific_pages(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int tileset_group_number,
 				size_t tiles_start_offset, size_t diagonal_pipes_offset);
 
 			// for page 0x2 of tilesets 0x0-0xE, if page 2 is set to be tileset-specific
-			static void convert_tileset_specific_page_2(std::vector<Byte> map16_buffer, unsigned int tileset_number, size_t tiles_start_offset);
+			static void convert_tileset_specific_page_2(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int tileset_number, size_t tiles_start_offset);
 
-			static void convert_global_page_2_for_tileset_specific_page_2s(std::vector<Byte> map16_buffer, size_t acts_like_offset);
+			static void convert_global_page_2_for_tileset_specific_page_2s(const fs::path& root, std::vector<Byte> map16_buffer, size_t acts_like_offset);
 
 			// converts one set of 8 pipe tiles for pipe tile numbers 0x0-0x3, no acts like settings
-			static void convert_normal_pipe_tiles(std::vector<Byte> map16_buffer, unsigned int pipe_number, size_t normal_pipe_offset);
+			static void convert_normal_pipe_tiles(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int pipe_number, size_t normal_pipe_offset);
 
-			static void convert_first_two_non_tileset_specific(std::vector<Byte> map16_buffer, size_t tileset_group_specific_pair, size_t acts_like_pair);
+			static void convert_first_two_non_tileset_specific(const fs::path& root, std::vector<Byte> map16_buffer, size_t tileset_group_specific_pair, size_t acts_like_pair);
 
 		public:
 			static void convert(const fs::path input_file, const fs::path output_path);
@@ -207,19 +201,19 @@ namespace HumanReadableMap16 {
 			static void verify_8x8_tile(const std::string line, unsigned int line_number, const fs::path file, 
 				unsigned int expected_tile_number, unsigned int& curr_char_idx, TileFormat tile_format);
 
-			static unsigned int parse_BG_pages(std::vector<Byte>& bg_tiles_vec, unsigned int base_tile_number);
-			static unsigned int parse_FG_pages(std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec, unsigned int base_tile_number);
-			static unsigned int parse_FG_pages_tileset_specific_page_2(std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec, 
+			static unsigned int parse_BG_pages(const fs::path& root, std::vector<Byte>& bg_tiles_vec, unsigned int base_tile_number);
+			static unsigned int parse_FG_pages(const fs::path& root, std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec, unsigned int base_tile_number);
+			static unsigned int parse_FG_pages_tileset_specific_page_2(const fs::path& root, std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec, 
 				std::vector<Byte>& tileset_specific_tiles_vec, unsigned int base_tile_number);
 
-			static void parse_tileset_group_specific_pages(std::vector<Byte>& tileset_group_specific_tiles_vec, 
+			static void parse_tileset_group_specific_pages(const fs::path& root, std::vector<Byte>& tileset_group_specific_tiles_vec, 
 				std::vector<Byte>& diagonal_pipe_tiles_vec, const std::vector<Byte>& fg_tiles_vec);
 
 			static void duplicate_tileset_group_specific_pages(std::vector<Byte>& tileset_group_specific_tiles_vec);
 
-			static void parse_tileset_specific_pages(std::vector<Byte>& tileset_specific_tiles_vec);
+			static void parse_tileset_specific_pages(const fs::path& root, std::vector<Byte>& tileset_specific_tiles_vec);
 
-			static void parse_normal_pipe_tiles(std::vector<Byte>& pipe_tiles_vec);
+			static void parse_normal_pipe_tiles(const fs::path& root, std::vector<Byte>& pipe_tiles_vec);
 
 			static std::vector<Byte> get_offset_size_vec(size_t header_size, size_t fg_tiles_size,
 				size_t bg_tiles_size, size_t acts_like_size, size_t tileset_specific_size, size_t tileset_group_specific_size, size_t normal_pipe_tiles_size,

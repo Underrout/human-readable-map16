@@ -129,10 +129,10 @@ void HumanReadableMap16::from_map16::convert_to_file(FILE* fp, unsigned int tile
 	);
 }
 
-void HumanReadableMap16::from_map16::convert_FG_page(std::vector<Byte> map16_buffer, unsigned int page_number,
+void HumanReadableMap16::from_map16::convert_FG_page(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int page_number,
 	size_t tiles_start_offset, size_t acts_like_start_offset) {
 	char filename[256];
-	sprintf(filename, "global_pages" SEP "FG_pages" SEP "page_%02X.txt", page_number);
+	sprintf(filename, (root / "global_pages" / "FG_pages" / "page_%02X.txt").c_str(), page_number);
 	FILE* fp = fopen(filename, "w");
 	unsigned int curr_tile_number = page_number * PAGE_SIZE;
 	auto curr_tile_it = map16_buffer.begin() + tiles_start_offset + PAGE_SIZE * _16x16_BYTE_SIZE * page_number;
@@ -159,8 +159,8 @@ void HumanReadableMap16::from_map16::convert_FG_page(std::vector<Byte> map16_buf
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_global_page_2_for_tileset_specific_page_2s(std::vector<Byte> map16_buffer, size_t acts_like_offset) {
-	FILE* fp = fopen("global_pages" SEP "FG_pages" SEP "page_02.txt", "w");
+void HumanReadableMap16::from_map16::convert_global_page_2_for_tileset_specific_page_2s(const fs::path& root, std::vector<Byte> map16_buffer, size_t acts_like_offset) {
+	FILE* fp = fopen((root / "global_pages" / "FG_pages" / "page_02.txt").c_str(), "w");
 
 	auto curr_acts_like_it = map16_buffer.begin() + acts_like_offset + PAGE_SIZE * ACTS_LIKE_SIZE * 2;
 
@@ -182,9 +182,9 @@ void HumanReadableMap16::from_map16::convert_global_page_2_for_tileset_specific_
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_BG_page(std::vector<Byte> map16_buffer, unsigned int page_number, size_t tiles_start_offset) {
+void HumanReadableMap16::from_map16::convert_BG_page(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int page_number, size_t tiles_start_offset) {
 	char filename[256];
-	sprintf(filename, "global_pages" SEP "BG_pages" SEP "page_%02X.txt", page_number);
+	sprintf(filename, (root / "global_pages" / "BG_pages" / "page_%02X.txt").c_str(), page_number);
 	FILE* fp = fopen(filename, "w");
 	unsigned int curr_tile_number = page_number * PAGE_SIZE;
 	auto curr_tile_it = map16_buffer.begin() + tiles_start_offset + PAGE_SIZE * _16x16_BYTE_SIZE * page_number;
@@ -208,10 +208,10 @@ void HumanReadableMap16::from_map16::convert_BG_page(std::vector<Byte> map16_buf
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_tileset_group_specific_pages(std::vector<Byte> map16_buffer, unsigned int tileset_group_number,
+void HumanReadableMap16::from_map16::convert_tileset_group_specific_pages(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int tileset_group_number,
 	size_t tiles_start_offset, size_t diagonal_pipes_offset) {
 	char filename[256];
-	sprintf(filename, "tileset_group_specific_tiles" SEP "tileset_group_%X.txt", tileset_group_number);
+	sprintf(filename, (root / "tileset_group_specific_tiles" / "tileset_group_%X.txt").c_str(), tileset_group_number);
 	FILE* fp = fopen(filename, "w");
 
 	auto curr_tile_it = map16_buffer.begin() + tiles_start_offset + PAGE_SIZE * _16x16_BYTE_SIZE * 2 * tileset_group_number + _16x16_BYTE_SIZE * TILESET_GROUP_SPECIFIC_TILES.at(0);
@@ -260,9 +260,9 @@ void HumanReadableMap16::from_map16::convert_tileset_group_specific_pages(std::v
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_tileset_specific_page_2(std::vector<Byte> map16_buffer, unsigned int tileset_number, size_t tiles_start_offset) {
+void HumanReadableMap16::from_map16::convert_tileset_specific_page_2(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int tileset_number, size_t tiles_start_offset) {
 	char filename[256];
-	sprintf(filename, "tileset_specific_tiles" SEP "tileset_%X.txt", tileset_number);
+	sprintf(filename, (root / "tileset_specific_tiles" / "tileset_%X.txt").c_str(), tileset_number);
 	FILE* fp = fopen(filename, "w");
 
 	unsigned int base_tile_number = 0x200;
@@ -289,9 +289,9 @@ void HumanReadableMap16::from_map16::convert_tileset_specific_page_2(std::vector
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_normal_pipe_tiles(std::vector<Byte> map16_buffer, unsigned int pipe_number, size_t normal_pipe_offset) {
+void HumanReadableMap16::from_map16::convert_normal_pipe_tiles(const fs::path& root, std::vector<Byte> map16_buffer, unsigned int pipe_number, size_t normal_pipe_offset) {
 	char filename[256];
-	sprintf(filename, "pipe_tiles" SEP "pipe_%X.txt", pipe_number);
+	sprintf(filename, (root / "pipe_tiles" / "pipe_%X.txt").c_str(), pipe_number);
 	FILE* fp = fopen(filename, "w");
 
 	auto curr_tile_it = map16_buffer.begin() + normal_pipe_offset + _16x16_BYTE_SIZE * 8 * pipe_number;
@@ -314,11 +314,11 @@ void HumanReadableMap16::from_map16::convert_normal_pipe_tiles(std::vector<Byte>
 	fclose(fp);
 }
 
-void HumanReadableMap16::from_map16::convert_first_two_non_tileset_specific(std::vector<Byte> map16_buffer,
+void HumanReadableMap16::from_map16::convert_first_two_non_tileset_specific(const fs::path& root, std::vector<Byte> map16_buffer,
 	size_t tileset_group_specific_offset, size_t acts_like_offset) {
 
-	FILE* fp1 = fopen("global_pages" SEP "FG_pages" SEP "page_00.txt", "w");
-	FILE* fp2 = fopen("global_pages" SEP "FG_pages" SEP "page_01.txt", "w");
+	FILE* fp1 = fopen((root / "global_pages" / "FG_pages" / "page_00.txt").c_str(), "w");
+	FILE* fp2 = fopen((root / "global_pages" / "FG_pages" / "page_01.txt").c_str(), "w");
 
 	std::unordered_set<_2Bytes> tileset_group_specific = std::unordered_set<_2Bytes>(TILESET_GROUP_SPECIFIC_TILES.begin(), TILESET_GROUP_SPECIFIC_TILES.end());
 
@@ -360,7 +360,7 @@ void HumanReadableMap16::from_map16::convert_first_two_non_tileset_specific(std:
 }
 
 void HumanReadableMap16::from_map16::write_header_file(std::shared_ptr<Header> header, const fs::path header_path) {
-	FILE* fp = fopen(header_path.string().c_str(), "w");
+	FILE* fp = fopen(header_path.c_str(), "w");
 
 	fprintf(
 		fp,
@@ -425,19 +425,18 @@ void HumanReadableMap16::from_map16::convert(const fs::path input_file, const fs
 	try {
 		fs::remove_all(output_path);
 		fs::create_directory(output_path);
-		fs::current_path(output_path);
 
-		write_header_file(header, "header.txt");
+		write_header_file(header, output_path / "header.txt");
 
-		fs::create_directory("global_pages");
-		fs::create_directory("global_pages" SEP "FG_pages");
-		fs::create_directory("global_pages" SEP "BG_pages");
-		fs::create_directory("tileset_group_specific_tiles");
+		fs::create_directory(output_path / "global_pages");
+		fs::create_directory(output_path / "global_pages" / "FG_pages");
+		fs::create_directory(output_path / "global_pages" / "BG_pages");
+		fs::create_directory(output_path / "tileset_group_specific_tiles");
 
 		if (has_tileset_specific_page_2s(header)) {
-			fs::create_directory("tileset_specific_tiles");
+			fs::create_directory(output_path / "tileset_specific_tiles");
 		}
-		fs::create_directory("pipe_tiles");
+		fs::create_directory(output_path / "pipe_tiles");
 
 	} catch (const fs::filesystem_error& e) {
 		throw FilesystemError("Encountered underlying file system error: " + std::string(e.what()), output_path);
@@ -454,36 +453,36 @@ void HumanReadableMap16::from_map16::convert(const fs::path input_file, const fs
 	const auto& normal_pipe_tiles = offset_size_table[6];
 	const auto& diagonal_grassland_pipes = offset_size_table[7];
 
-	convert_first_two_non_tileset_specific(bytes, tileset_specific_first_two_pair.first, full_acts_like_pair.first);
+	convert_first_two_non_tileset_specific(output_path, bytes, tileset_specific_first_two_pair.first, full_acts_like_pair.first);
 
 	unsigned int first_truly_global_page;
 	if (has_tileset_specific_page_2s(header)) {
 		first_truly_global_page = 3;
-		convert_global_page_2_for_tileset_specific_page_2s(bytes, full_acts_like_pair.first);
+		convert_global_page_2_for_tileset_specific_page_2s(output_path, bytes, full_acts_like_pair.first);
 	}
 	else {
 		first_truly_global_page = 2;
 	}
 
 	for (unsigned int page_number = first_truly_global_page; page_number != 0x80; page_number++) {
-		convert_FG_page(bytes, page_number, full_map16_pair.first, full_acts_like_pair.first);
+		convert_FG_page(output_path, bytes, page_number, full_map16_pair.first, full_acts_like_pair.first);
 	}
 
 	for (unsigned int page_number = 0x80; page_number != 0x100; page_number++) {
-		convert_BG_page(bytes, page_number, full_map16_pair.first);
+		convert_BG_page(output_path, bytes, page_number, full_map16_pair.first);
 	}
 
 	for (unsigned int tileset_group = 0; tileset_group != 5; tileset_group++) {
-		convert_tileset_group_specific_pages(bytes, tileset_group, tileset_specific_first_two_pair.first, diagonal_grassland_pipes.first);
+		convert_tileset_group_specific_pages(output_path, bytes, tileset_group, tileset_specific_first_two_pair.first, diagonal_grassland_pipes.first);
 	}
 
 	if (has_tileset_specific_page_2s(header)) {
 		for (unsigned int tileset = 0; tileset != 0xF; tileset++) {
-			convert_tileset_specific_page_2(bytes, tileset, tileset_specific_page_2s_pair.first);
+			convert_tileset_specific_page_2(output_path, bytes, tileset, tileset_specific_page_2s_pair.first);
 		}
 	}
 
 	for (unsigned int pipe = 0; pipe != 0x4; pipe++) {
-		convert_normal_pipe_tiles(bytes, pipe, normal_pipe_tiles.first);
+		convert_normal_pipe_tiles(output_path, bytes, pipe, normal_pipe_tiles.first);
 	}
 }
