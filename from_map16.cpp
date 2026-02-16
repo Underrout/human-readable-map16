@@ -360,7 +360,7 @@ void HumanReadableMap16::from_map16::convert_first_two_non_tileset_specific(cons
 }
 
 void HumanReadableMap16::from_map16::write_header_file(std::shared_ptr<Header> header, const fs::path header_path) {
-	FILE* fp = fopen(header_path.c_str(), "w");
+	FILE* fp = fopen(header_path.string().c_str(), "w");
 
 	fprintf(
 		fp,
