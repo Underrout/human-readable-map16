@@ -4,18 +4,18 @@
 #include "tile_error.h"
 #include "header_error.h"
 #include "arrays.h"
+#include <algorithm>
 
 std::shared_ptr<HumanReadableMap16::Header> HumanReadableMap16::to_map16::parse_header_file(const fs::path header_path) {
 	verify_header_file(header_path);
 
-	FILE* fp;
-	fopen_s(&fp, header_path.string().c_str(), "r");
+	FILE* fp = fopen(header_path.string().c_str(), "r");
 
 	auto header = std::make_shared<Header>();
 
 	unsigned int is_full_game_export, has_tileset_specific_page_2;
 
-	fscanf_s(fp,
+	fscanf(fp,
 		"file_format_version_number: %X\n" \
 		"game_id: %X\n" \
 		"program_version: %X\n" \
@@ -192,7 +192,7 @@ void HumanReadableMap16::to_map16::split_and_insert_4(_4Bytes bytes, std::vector
 bool HumanReadableMap16::to_map16::try_LM_empty_convert_full(std::vector<Byte>& tiles_vec, std::vector<Byte>& acts_like_vec, 
 	const std::string line, unsigned int expected_tile_number) {
 	char buf[256];
-	sprintf_s(buf, LM_EMTPY_TILE_FORMAT_NO_NEWLINE, expected_tile_number);
+	snprintf(buf, 256, LM_EMTPY_TILE_FORMAT_NO_NEWLINE, expected_tile_number);
 	std::string expected_line = buf;
 
 	if (expected_line != line) {
@@ -210,7 +210,7 @@ bool HumanReadableMap16::to_map16::try_LM_empty_convert_full(std::vector<Byte>& 
 
 bool HumanReadableMap16::to_map16::try_LM_empty_convert_tiles_only(std::vector<Byte>& tiles_vec, const std::string line, unsigned int expected_tile_number) {
 	char buf[256];
-	sprintf_s(buf, LM_EMTPY_TILE_FORMAT_NO_NEWLINE, expected_tile_number);
+	sprintf(buf, LM_EMTPY_TILE_FORMAT_NO_NEWLINE, expected_tile_number);
 	std::string expected_line = buf;
 
 	if (expected_line != line) {
@@ -245,7 +245,7 @@ void HumanReadableMap16::to_map16::convert_full(std::vector<Byte>& tiles_vec, st
 		_8x8_tile_3, palette_3, _8x8_tile_4, palette_4;
 	char x_1, x_2, x_3, x_4, y_1, y_2, y_3, y_4, p_1, p_2, p_3, p_4;
 
-	sscanf_s(line.c_str(), STANDARD_FORMAT,
+	sscanf(line.c_str(), STANDARD_FORMAT,
 		&_16x16_tile_number, &acts_like,
 		&_8x8_tile_1, &palette_1, &x_1, 1, &y_1, 1, &p_1, 1,
 		&_8x8_tile_2, &palette_2, &x_2, 1, &y_2, 1, &p_2, 1,
@@ -365,7 +365,7 @@ void HumanReadableMap16::to_map16::verify_8x8_tiles(const std::string line, unsi
 void HumanReadableMap16::to_map16::verify_tile_number(const std::string line, unsigned int line_number, const fs::path file, unsigned int& curr_char_idx,
 	TileFormat tile_format, unsigned int expected_tile_number) {
 	char tile_number_part[7];
-	sprintf_s(tile_number_part, "%04X: ", expected_tile_number);
+	sprintf(tile_number_part, "%04X: ", expected_tile_number);
 	std::string tile_number_p = std::string(tile_number_part);
 
 	for (const char c : tile_number_p) {
@@ -406,7 +406,7 @@ void HumanReadableMap16::to_map16::verify_acts_like(const std::string line, unsi
 	}
 
 	unsigned int acts_digit_1, acts_digit_2, acts_digit_3;
-	unsigned int res = sscanf_s(acts_like.c_str(), "%1X%1X%1X", &acts_digit_1, &acts_digit_2, &acts_digit_3);
+	unsigned int res = sscanf(acts_like.c_str(), "%1X%1X%1X", &acts_digit_1, &acts_digit_2, &acts_digit_3);
 
 	bool is_all_uppercase = std::all_of(acts_like.begin(), acts_like.end(), [](unsigned char c) { return std::isupper(c) || std::isdigit(c); });
 
@@ -459,7 +459,7 @@ void HumanReadableMap16::to_map16::verify_8x8_tile(const std::string line, unsig
 	unsigned int _8x8_tile_digit_1, _8x8_tile_digit_2, _8x8_tile_digit_3, palette;
 	char x, y, p;
 
-	unsigned int res = sscanf_s(tile_substr.c_str(), "%1X%1X%1X %X %c%c%c",
+	unsigned int res = sscanf(tile_substr.c_str(), "%1X%1X%1X %X %c%c%c",
 		&_8x8_tile_digit_1, &_8x8_tile_digit_2, &_8x8_tile_digit_3, &palette,
 		&x, 1, &y, 1, &p, 1
 	);
@@ -513,7 +513,7 @@ void HumanReadableMap16::to_map16::convert_acts_like_only(std::vector<Byte>& act
 
 	unsigned int _16x16_tile_number, acts_like;
 
-	sscanf_s(line.c_str(), NO_TILES_FORMAT,
+	sscanf(line.c_str(), NO_TILES_FORMAT,
 		&_16x16_tile_number, &acts_like
 	);
 
@@ -558,7 +558,7 @@ void HumanReadableMap16::to_map16::convert_tiles_only(std::vector<Byte>& tiles_v
 		_8x8_tile_3, palette_3, _8x8_tile_4, palette_4;
 	char x_1, x_2, x_3, x_4, y_1, y_2, y_3, y_4, p_1, p_2, p_3, p_4;
 
-	sscanf_s(line.c_str(), NO_ACTS_FORMAT,
+	sscanf(line.c_str(), NO_ACTS_FORMAT,
 		&_16x16_tile_number,
 		&_8x8_tile_1, &palette_1, &x_1, 1, &y_1, 1, &p_1, 1,
 		&_8x8_tile_2, &palette_2, &x_2, 1, &y_2, 1, &p_2, 1,
@@ -637,11 +637,11 @@ std::vector<fs::path> HumanReadableMap16::to_map16::get_sorted_paths(const fs::p
 }
 
 unsigned int HumanReadableMap16::to_map16::parse_BG_pages(std::vector<Byte>& bg_tiles_vec, unsigned int base_tile_number) {
-	if (!fs::exists("global_pages\\BG_pages")) {
-		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages\\BG_pages"));
+	if (!fs::exists("global_pages" SEP "BG_pages")) {
+		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages" SEP "BG_pages"));
 	}
 
-	const auto sorted_paths = get_sorted_paths("global_pages\\BG_pages");
+	const auto sorted_paths = get_sorted_paths("global_pages" SEP "BG_pages");
 
 	unsigned int curr_tile_number = base_tile_number;
 
@@ -666,11 +666,11 @@ unsigned int HumanReadableMap16::to_map16::parse_BG_pages(std::vector<Byte>& bg_
 }
 
 unsigned int HumanReadableMap16::to_map16::parse_FG_pages(std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec, unsigned int base_tile_number) {
-	if (!fs::exists("global_pages\\FG_pages")) {
-		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages\\FG_pages"));
+	if (!fs::exists("global_pages" SEP "FG_pages")) {
+		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages" SEP "FG_pages"));
 	}
 
-	const auto sorted_paths = get_sorted_paths("global_pages\\FG_pages");
+	const auto sorted_paths = get_sorted_paths("global_pages" SEP "FG_pages");
 
 	unsigned int curr_tile_number = base_tile_number;
 
@@ -704,11 +704,11 @@ unsigned int HumanReadableMap16::to_map16::parse_FG_pages(std::vector<Byte>& fg_
 
 unsigned int HumanReadableMap16::to_map16::parse_FG_pages_tileset_specific_page_2(std::vector<Byte>& fg_tiles_vec, std::vector<Byte>& acts_like_vec,
 	std::vector<Byte>& tileset_specific_tiles_vec, unsigned int base_tile_number) {
-	if (!fs::exists("global_pages\\FG_pages")) {
-		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages\\FG_pages"));
+	if (!fs::exists("global_pages" SEP "FG_pages")) {
+		throw FilesystemError("Expected directory appears to be missing", fs::path("global_pages" SEP "FG_pages"));
 	}
 
-	const auto sorted_paths = get_sorted_paths("global_pages\\FG_pages");
+	const auto sorted_paths = get_sorted_paths("global_pages" SEP "FG_pages");
 
 	unsigned int curr_tile_number = base_tile_number;
 
@@ -973,7 +973,7 @@ void HumanReadableMap16::to_map16::convert(const fs::path input_path, const fs::
 		throw FilesystemError("Input path does not appear to be a directory", input_path);
 	}
 
-	_wchdir(input_path.c_str());
+	fs::current_path(input_path);
 
 	auto header = parse_header_file("header.txt");
 
@@ -1016,7 +1016,7 @@ void HumanReadableMap16::to_map16::convert(const fs::path input_path, const fs::
 	const auto combined = combine(header_vec, offset_size_vec, fg_tiles_vec, bg_tiles_vec, acts_like_vec, tileset_specific_vec,
 		tileset_group_specific_vec, pipe_tiles_vec, diagonal_pipe_tiles_vec);
 
-	_wchdir(original_working_dir.c_str());
+	fs::current_path(original_working_dir);
 
 	std::ofstream map16_file(output_file, std::ios::out | std::ios::binary);
 	map16_file.write(reinterpret_cast<const char *>(combined.data()), combined.size());

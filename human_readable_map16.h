@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef _WIN32
+#define SEP "\\"
+#else
+#define SEP "/"
+#endif
+
 #include <vector>
 #include <string>
 #include <fstream>
